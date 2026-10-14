@@ -1,0 +1,47 @@
+# PR 的自动检查：校验新增或修改的条目，下载 zip 核对 SHA-256，
+# 再用 Translator 自己的 adapter test 检查扩展包并在样例上试运行（Python 3.11，无 Office）。
+name: Check entries
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      all:
+        description: "Check every entry"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.3
+        with:
+          fetch-depth: 0
+      - uses: actions/checkout@v6.0.3
+        with:
+          repository: KlaraGraff/XL_Translator
+          ref: main
+          path: translator
+      - uses: actions/setup-python@v6.2.0
+        with:
+          python-version: "3.11"
+      - name: Install Translator's requirements
+        run: python -m pip install -r translator/requirements.txt
+      - name: Entries changed by this pull request
+        if: github.event_name == 'pull_request'
+        run: |
+          git diff --name-only --diff-filter=AM "origin/${{ github.base_ref }}...HEAD" -- 'extensions/*.json' > changed.txt
+          cat changed.txt
+      - name: Check entries
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            python scripts/check_entries.py --translator translator $(cat changed.txt)
+          else
+            python scripts/check_entries.py --translator translator --all
+          fi
+      - name: The index still builds
+        run: python scripts/build_index.py

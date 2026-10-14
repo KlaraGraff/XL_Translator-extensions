@@ -1,0 +1,42 @@
+# main 上的条目有变化时重新生成 index.json 并提交，再刷新 jsDelivr 的缓存。
+name: Build index
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "extensions/**"
+      - "scripts/build_index.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-index
+  cancel-in-progress: false
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.3
+      - uses: actions/setup-python@v6.2.0
+        with:
+          python-version: "3.11"
+      - run: python scripts/build_index.py
+      - name: Commit index.json
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- index.json; then
+            echo "index.json is up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.json
+          git commit -m "Rebuild index.json"
+          git push
+      - name: Refresh the jsDelivr cache
+        run: curl -fsS "https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/index.json" || true

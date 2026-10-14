@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "extensions": [
+    {
+      "id": "text",
+      "name": {
+        "zh": "文本",
+        "en": "Text",
+        "fr": "Texte"
+      },
+      "summary": {
+        "zh": "翻译纯文本（.txt）与 Markdown（.md、.markdown）文件，保留原有格式。代码块、链接地址不翻译。",
+        "en": "Translates plain text (.txt) and Markdown (.md, .markdown) files and keeps their layout. Code blocks and link addresses are not translated.",
+        "fr": "Traduit les fichiers texte (.txt) et Markdown (.md, .markdown) en conservant leur mise en forme. Les blocs de code et les adresses des liens ne sont pas traduits."
+      },
+      "extensions": [
+        "txt",
+        "md",
+        "markdown"
+      ],
+      "author": "KlaraGraff",
+      "repo": "https://github.com/KlaraGraff/XL_Translator",
+      "license": "MIT",
+      "version": "1.0.0",
+      "adapter_api_version": 1,
+      "min_app_version": "",
+      "download": [
+        "https://cdn.jsdelivr.net/gh/KlaraGraff/XL_Translator-extensions@main/packages/text-1.0.0.zip",
+        "https://raw.githubusercontent.com/KlaraGraff/XL_Translator-extensions/main/packages/text-1.0.0.zip"
+      ],
+      "sha256": "70cd795d92e8cb0749f214da36dc4f522cd6038c47fcd68c49e96f24f6baf844",
+      "size": 10485,
+      "tags": [
+        "text",
+        "markdown"
+      ],
+      "status": "official",
+      "reviewed_at": "2026-10-14",
+      "reviewed_by": "KlaraGraff"
+    }
+  ]
+}
